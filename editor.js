@@ -1,3 +1,4 @@
+import {designTemplates,resolveDesign,applyDesign} from './designs.js';
 import {labels,fields,newDocument,section,addPhoto,normalizeDocumentPhotos,galleryPhotos} from './content.js';
 import {renderInvitation} from './render.js';
 import {encryptDocument,publicDocument,validateDocument} from './vault.js';
@@ -38,8 +39,20 @@ function renderPhotoLibrary(form,doc,page=null){
  }
  library.append(grid);form.append(library);
 }
+function renderDesignPicker(form,doc){
+ const picker=node('section',undefined,'design-picker');picker.append(node('h3','디자인 템플릿'),node('p','준비된 디자인 중 마음에 드는 스타일을 선택하세요.','field-hint'));
+ const grid=node('div',undefined,'design-grid'),currentId=resolveDesign(doc).id;
+ for(const design of designTemplates){
+  const selectedDesign=design.id===currentId,card=node('article',undefined,'design-card'+(selectedDesign?' is-selected':'')),thumbnail=node('div',undefined,'design-thumbnail');thumbnail.setAttribute('aria-hidden','true');
+  const miniature=node('div'),sample={...doc,photos:[]};applyDesign(sample,design.id);sample.sections=[{id:'design-preview',type:'cover',enabled:true,style:'frame',data:{eyebrow:'A LOVE LETTER FROM',subtitle:'우리의 소중한 시작'}}];renderInvitation(miniature,sample,{preview:true});thumbnail.append(miniature);
+  const info=node('div',undefined,'design-card-info');info.append(node('h4',design.name),node('p',design.description));
+  const choose=node('button',selectedDesign?'적용 중':'적용','design-apply');choose.type='button';choose.setAttribute('aria-label',design.name+' 적용');choose.setAttribute('aria-pressed',String(selectedDesign));choose.setAttribute('data-design-id',design.id);
+  choose.onclick=()=>{if(design.id===resolveDesign(current.document).id)return;applyDesign(current.document,design.id);changed();renderForm();toast(design.name+' 디자인을 적용했어요.');};info.append(choose);card.append(thumbnail,info);grid.append(card);
+ }
+ picker.append(grid);form.append(picker);
+}
 function renderForm(){const form=$('#section-form');form.replaceChildren();const doc=current.document;const s=doc.sections.find(s=>s.id===selected);$('#form-title').textContent=s?labels[s.type]:'기본 정보 · 디자인';
- if(!s){inputField(form,'청첩장 이름',doc.title,v=>doc.title=v,{max:80});const pair=node('div',undefined,'field-pair');inputField(pair,'신랑 이름',doc.partner1,v=>doc.partner1=v,{max:40});inputField(pair,'신부 이름',doc.partner2,v=>doc.partner2=v,{max:40});form.append(pair);inputField(form,'예식 날짜 · 시간 (한국 시간)',doc.date,v=>{if(v)doc.date=v;},{type:'datetime-local'});selectField(form,'편지의 분위기',doc.theme,[['lace','Lace · 아이보리 레이스'],['butter','Butter · 버터빛 편지'],['rose','Rose · 로즈 페이퍼']],v=>doc.theme=v);form.append(node('p','이름과 날짜는 표지와 달력에 함께 반영돼요. 페이지별 배경은 각 페이지에서 바꿀 수 있어요.','field-hint'));renderPhotoLibrary(form,doc);return;}
+ if(!s){inputField(form,'청첩장 이름',doc.title,v=>doc.title=v,{max:80});const pair=node('div',undefined,'field-pair');inputField(pair,'신랑 이름',doc.partner1,v=>doc.partner1=v,{max:40});inputField(pair,'신부 이름',doc.partner2,v=>doc.partner2=v,{max:40});form.append(pair);inputField(form,'예식 날짜 · 시간 (한국 시간)',doc.date,v=>{if(v)doc.date=v;},{type:'datetime-local'});renderDesignPicker(form,doc);form.append(node('p','디자인을 바꿔도 이름·날짜·사진과 페이지 구성은 유지돼요. 페이지별 배경은 각 페이지에서 바꿀 수 있어요.','field-hint'));renderPhotoLibrary(form,doc);return;}
  const toggle=node('label','이 페이지 공개하기','toggle-label'),check=node('input');check.type='checkbox';check.checked=s.enabled;check.onchange=()=>{s.enabled=check.checked;changed();renderStructure();};toggle.prepend(check);form.append(toggle);
  selectField(form,'페이지 스타일',s.style,[['paper','심플한 종이'],['tint','부드러운 색감'],['frame','레이스 프레임']],v=>s.style=v);
  for(const [key,label]of Object.entries(fields[s.type]))inputField(form,label,s.data[key],v=>s.data[key]=v,{multiline:['body','family','transport','groom','bride'].includes(key)});

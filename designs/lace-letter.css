@@ -1,0 +1,3 @@
+.design-lace-letter{--paper:#fbf8ef;--ink:#655f4e;--tint:#eeecdf;--accent:#91886d}
+.design-lace-letter .section-cover{background:radial-gradient(ellipse at 50% 35%,#fffdf8,var(--paper) 72%)}
+.design-lace-letter .section-cover h1{letter-spacing:.06em}

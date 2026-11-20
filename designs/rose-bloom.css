@@ -1,0 +1,11 @@
+.design-rose-bloom{--paper:#fcf3ef;--ink:#795a55;--tint:#efddd6;--accent:#ab8277}
+.design-rose-bloom .section-cover{background:#fcf3ef;border:18px solid #f2e3dd;outline:1px solid #c49f9380;outline-offset:-27px;min-height:680px}
+.design-rose-bloom .section-cover:before,.design-rose-bloom .section-cover:after{display:none}
+.design-rose-bloom .crest{width:150px;height:170px;border-radius:90px 90px 4px 4px;outline:1px solid #c49f9360;outline-offset:7px;border-color:#bd9688;background:linear-gradient(#f8ece7,#f1dfd6);margin-top:30px}
+.design-rose-bloom .crest img{width:125px;height:110px;opacity:.8}
+.design-rose-bloom .section-cover .script{font-size:25px;color:#aa7e73}
+.design-rose-bloom .section-cover h1{font-size:30px;letter-spacing:.09em}
+.design-rose-bloom .section-cover .seal{color:#ac887b}
+.design-rose-bloom .gallery{gap:8px}
+.design-rose-bloom .photo-button{border-radius:6px}
+.design-rose-bloom .invite-section h2{letter-spacing:.08em}

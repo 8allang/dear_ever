@@ -1,0 +1,2 @@
+// Generated from designs/catalog.json. Do not edit directly.
+export const designTemplates=[{"id":"lace-letter","version":1,"name":"레이스 레터","description":"아이보리 종이, 섬세한 레이스와 식물 장식","legacyTheme":"lace"},{"id":"butter-letter","version":1,"name":"버터 레터","description":"버터빛 편지지와 둥근 봉인 장식","legacyTheme":"butter"},{"id":"rose-bloom","version":1,"name":"로즈 블룸","description":"로즈 페이퍼와 아치 프레임의 로맨틱한 초대","legacyTheme":"rose"},{"id":"modern-vow","version":1,"name":"모던 보우","description":"넓은 여백과 또렷한 글자가 있는 모던한 약속","legacyTheme":"lace"}];

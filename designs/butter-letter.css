@@ -1,0 +1,12 @@
+.design-butter-letter{--paper:#fff6d9;--ink:#71613c;--tint:#f3e6b9;--accent:#a08d56}
+.design-butter-letter .section-cover{background:linear-gradient(150deg,#fff9e6,#f7ecc6);border:12px solid #fff9e6;outline:1px solid #b9a77566;outline-offset:-22px;min-height:680px}
+.design-butter-letter .section-cover:before,.design-butter-letter .section-cover:after{display:none}
+.design-butter-letter .crest{order:6;width:88px;height:88px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fdf6e4,#e0cda3);border:5px double #f7edcf;outline:0;box-shadow:2px 5px 10px #78603020;margin:32px auto 10px}
+.design-butter-letter .crest img{width:60px;height:68px;opacity:.75}
+.design-butter-letter .section-cover>.eyebrow{font-size:10px;letter-spacing:.18em;margin-bottom:25px}
+.design-butter-letter .section-cover .script{font-size:30px;color:#9a8450;margin-bottom:14px}
+.design-butter-letter .section-cover h1{font-size:32px;letter-spacing:.04em;margin-bottom:12px}
+.design-butter-letter .section-cover .seal{order:7;margin-top:8px;padding-top:0}
+.design-butter-letter .section-cover .seal:before{display:none}
+.design-butter-letter .gallery{gap:10px}
+.design-butter-letter .photo-button{border-radius:70px 70px 3px 3px}

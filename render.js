@@ -1,9 +1,10 @@
+import {resolveDesign} from './designs.js';
 import {galleryPhotos} from './content.js';
 import {openRsvp} from './rsvp.js';
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 export function dateText(value){return new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long',hour:'numeric',minute:'2-digit',timeZone:'Asia/Seoul'}).format(new Date(value+'+09:00'));}
 export function renderInvitation(root,doc,{preview=false}={}){
- root.replaceChildren(); root.className='invitation theme-'+doc.theme;
+ root.replaceChildren(); root.className='invitation theme-'+doc.theme+' design-'+resolveDesign(doc).id;
  const date=new Date(doc.date+'+09:00');
  for(const s of doc.sections.filter(s=>s.enabled)){
   const box=el('section',undefined,'invite-section style-'+s.style+' section-'+s.type); const d=s.data;

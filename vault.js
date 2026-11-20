@@ -11,6 +11,7 @@ export function publicDocument(doc){return {format:'dear-ever',version:1,encrypt
 export function validateDocument(doc){
  const types=['cover','invitation','calendar','gallery','location','accounts','notice','rsvp','video','contact','closing'];
  if(!doc||typeof doc!=='object'||typeof doc.title!=='string'||!doc.title.trim()||doc.title.length>80||!['lace','butter','rose'].includes(doc.theme)||typeof doc.date!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(doc.date)||!Number.isFinite(Date.parse(doc.date+'+09:00'))||!Array.isArray(doc.sections)||doc.sections.length<1||doc.sections.length>30)throw Error('청첩장 파일 형식을 확인해주세요.');
+ if(doc.designId!==undefined&&(typeof doc.designId!=='string'||!/^[a-z][a-z0-9-]{1,59}$/.test(doc.designId)))throw Error('디자인 형식이 올바르지 않습니다.');
  for(const k of ['partner1','partner2'])if(typeof doc[k]!=='string'||doc[k].length>40)throw Error('이름 형식이 올바르지 않습니다.');
  const imageOk=x=>typeof x==='string'&&x.length<=1500000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(x);
  const photoIds=new Set();

@@ -1,0 +1,13 @@
+.design-modern-vow{--paper:#fafaf7;--ink:#333f3c;--tint:#e9ede8;--accent:#76867d;font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.design-modern-vow .section-cover{background:#fafaf7;border:0;outline:0;align-items:flex-start;text-align:left;padding:70px 40px;min-height:680px}
+.design-modern-vow .section-cover:before,.design-modern-vow .section-cover:after{display:none}
+.design-modern-vow .section-cover>.eyebrow{font-family:Arial,sans-serif;font-size:9px;letter-spacing:.22em;color:#76867d;margin-bottom:60px}
+.design-modern-vow .crest{display:none}
+.design-modern-vow .section-cover .script{font-family:Georgia,serif;font-style:normal;font-size:46px;line-height:1.15;max-width:200px;margin:0 0 28px;color:#42514b}
+.design-modern-vow .section-cover h1{font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:28px;letter-spacing:-.03em;margin:0 0 15px}
+.design-modern-vow .section-cover .ornament{width:44px;height:1px;overflow:hidden;background:#76867d;margin:15px 0 25px}
+.design-modern-vow .section-cover .seal{margin:50px 0 0;padding-top:0;font-family:inherit;letter-spacing:.04em;color:#76867d}
+.design-modern-vow .section-cover .seal:before{display:none}
+.design-modern-vow .invite-section h2{font-family:inherit;font-size:22px;letter-spacing:-.03em}
+.design-modern-vow .gallery{gap:4px}
+.design-modern-vow .photo-button{border-radius:0}
