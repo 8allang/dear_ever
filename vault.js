@@ -1,0 +1,21 @@
+import {normalizeDocumentPhotos} from './content.js';
+// The password and derived key never leave this browser and are never stored in JSON.
+const encoder=new TextEncoder(),decoder=new TextDecoder();
+const b64=bytes=>{let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(s);};
+const unb64=value=>{if(typeof value!=='string'||!/^[A-Za-z0-9+/]*={0,2}$/.test(value))throw Error('올바르지 않은 암호화 파일입니다.');return Uint8Array.from(atob(value),c=>c.charCodeAt(0));};
+const aad=encoder.encode('dear-ever:v1');
+async function derive(password,salt,usage){const material=await crypto.subtle.importKey('raw',encoder.encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:600000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,[usage]);}
+export async function encryptDocument(doc,password){if(password.length<12)throw Error('비밀번호는 12자 이상으로 설정해주세요.');const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const key=await derive(password,salt,'encrypt');const ciphertext=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:aad},key,encoder.encode(JSON.stringify(doc)));return {format:'dear-ever',version:1,encrypted:true,algorithm:'AES-256-GCM',kdf:'PBKDF2-SHA256',iterations:600000,salt:b64(salt),iv:b64(iv),ciphertext:b64(new Uint8Array(ciphertext))};}
+export async function decryptDocument(file,password){if(file.format!=='dear-ever'||file.version!==1||file.algorithm!=='AES-256-GCM'||file.kdf!=='PBKDF2-SHA256'||file.iterations!==600000)throw Error('지원하지 않는 암호화 파일입니다.');const salt=unb64(file.salt),iv=unb64(file.iv);if(salt.length!==16||iv.length!==12)throw Error('손상된 암호화 파일입니다.');try{const key=await derive(password,salt,'decrypt');return JSON.parse(decoder.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv,additionalData:aad},key,unb64(file.ciphertext))));}catch{throw Error('비밀번호가 다르거나 파일이 손상되었습니다.');}}
+export function publicDocument(doc){return {format:'dear-ever',version:1,encrypted:false,document:doc};}
+export function validateDocument(doc){
+ const types=['cover','invitation','calendar','gallery','location','accounts','notice','rsvp','video','contact','closing'];
+ if(!doc||typeof doc!=='object'||typeof doc.title!=='string'||!doc.title.trim()||doc.title.length>80||!['lace','butter','rose'].includes(doc.theme)||typeof doc.date!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(doc.date)||!Number.isFinite(Date.parse(doc.date+'+09:00'))||!Array.isArray(doc.sections)||doc.sections.length<1||doc.sections.length>30)throw Error('청첩장 파일 형식을 확인해주세요.');
+ for(const k of ['partner1','partner2'])if(typeof doc[k]!=='string'||doc[k].length>40)throw Error('이름 형식이 올바르지 않습니다.');
+ const imageOk=x=>typeof x==='string'&&x.length<=1500000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(x);
+ const photoIds=new Set();
+ if(doc.photos!==undefined){if(!Array.isArray(doc.photos)||doc.photos.length>100)throw Error('사진 보관함 형식이 올바르지 않습니다.');for(const p of doc.photos){if(!p||typeof p.id!=='string'||!p.id||p.id.length>100||photoIds.has(p.id)||!imageOk(p.src))throw Error('보관된 사진 형식이 올바르지 않습니다.');photoIds.add(p.id);}}
+ const ids=new Set();for(const s of doc.sections){if(!s||typeof s.id!=='string'||s.id.length>100||ids.has(s.id)||!types.includes(s.type)||!['paper','tint','frame'].includes(s.style)||typeof s.enabled!=='boolean'||!s.data||typeof s.data!=='object'||Array.isArray(s.data))throw Error('페이지 형식이 올바르지 않습니다.');ids.add(s.id);for(const [k,v]of Object.entries(s.data)){if(k==='photoIds'){if(!Array.isArray(v)||v.length>10||new Set(v).size!==v.length||v.some(id=>!photoIds.has(id)))throw Error('페이지 사진 연결이 올바르지 않습니다.');}else if(k==='images'){if(!Array.isArray(v)||v.length>10||v.some(x=>typeof x!=='string'||x.length>1500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(x)))throw Error('사진 형식이 올바르지 않습니다.');}else if(typeof v!=='string'||v.length>4000)throw Error('입력 내용이 너무 길거나 형식이 다릅니다.');}}
+ return normalizeDocumentPhotos(doc);
+}
+export function readPublic(file){if(file.format!=='dear-ever'||file.version!==1||file.encrypted!==false)throw Error('지원하지 않는 JSON 파일입니다.');return validateDocument(file.document);}
